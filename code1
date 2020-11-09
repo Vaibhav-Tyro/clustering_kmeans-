@@ -1,0 +1,49 @@
+# Importing all the important libraries.
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import datasets
+
+# Load the Iris dataset.
+iris = datasets.load_iris()
+iris_df = pd.DataFrame(iris.data, columns = iris.feature_names)
+iris_df.head()
+
+# To find correct numbers of clusters for K-means classification
+
+x = iris.iloc[:, [0,1,2,3]].values # indexed labelled values from the datasets.
+
+from sklearn.cluster import KMeans
+wcss = []
+
+for i in range(1, 11):
+    kmeans = KMeans (n_cluster = i, init = "k-means++", max_iter = 300, n_init = 10, random_state = 0)
+    kmeans.fit()
+    wxss.append(kmeans.inertia_)
+    
+# plotting the result.
+
+plt.plot(range(1,11), wcss)
+plt.title('The knee method')
+plt.legend(loc = "right corner")
+plt.xlabel('Number of clusters')
+plt.ylabel('WCSS') # within cluster sum of squares
+plt.show()
+
+# Applying kmeans to the dataset / creating the kmeans classifier
+kmeans = KMeans (n_cluster = 3, init = "k-means++", max_iter = 300, n_init = 10, random_state = 0)
+y_means = kmeans.fit_predict(x)
+
+# Visualising the clusters 
+plt.scatter(x[y_means ==0, 0], x[y_means == 0, 1],
+               s = 100, c = "red", label = "Iris-setosa")
+plt.scatter(x[y_means ==1, 0], x[y_means == 1, 1],
+               s = 100, c = "blue", label = "Iris-versicolour")
+plt.scatter(x[y_means ==2, 0], x[y_means == 2, 1],
+               s = 100, c = "green", label = "Iris-virginica")
+               
+# Plotting the centroids of the clusters.
+plt.scatter(kmeans.cluster centers [:, 0], kmeans.cluster centers [:, 1],
+             s = 100, c = "yellow", label = "Centroids")
+plt.legend()
+
